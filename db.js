@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 config();
 
 
-const mysql = from 'mysql';
+const mysql = require('mysql');
 
 // Créer une connexion à la base de données
 const pool = mysql.createPool({
