@@ -1,27 +1,59 @@
-const user = require('../models/User');
+// userController.js
 
-exports.create = (req, res) => {
-  // Validez la requête
-  if (!req.body) {
-    return res.status(400).send({
-      message: "Content can't be empty!"
-    });
+import User from '../models/User.js';
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération des utilisateurs." });
   }
-
-  // Créez un utilisateur
-  const user = new User(null, req.body.nom, req.body.email, req.body.age, req.body.password);
-
-  // Sauvegardez dans la base de données
-  User.create(user, (err, data) => {
-    if (err) {
-      res.status(500).send({
-        message: err.message || "Some error occurred while creating the User."
-      });
-    } else {
-      res.send(data);
-    }
-  });
 };
 
-// ... d'autres méthodes de contrôleur pour opérations CRUD
-module.exports = User.create
+const getUser = async (req, res) => {  
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur." });
+  }
+};
+
+const createUser = async (req, res) => {
+  try {
+    const newUser = await User.create(req.body);
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la création de l'utilisateur." });
+  }
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const updatedUser = await User.update(req.params.id, req.body);
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la mise à jour de l'utilisateur." });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    await User.delete(req.params.id);
+    res.status(200).json({ message: "Utilisateur supprimé avec succès." });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la suppression de l'utilisateur." });
+  }
+};
+
+export{
+  getAllUsers,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser
+};

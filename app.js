@@ -1,18 +1,22 @@
-const express = require('express');
+// app.js
+import { config } from 'dotenv';
+config();
+
+
+import express from 'express';
+
 const app = express();
+
+import userRoutes from './restful_api/routes/userRoutes.js';
+import taskRoutes from './restful_api/routes/tasksRoutes.js';
+
 
 app.use(express.json());
 
-const PORT = 5000;
+app.use('/users', userRoutes);
+app.use('/tasks', taskRoutes);
 
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`server est lancé sur le port ${PORT}`)
+  console.log(`Server running on port ${PORT}`);
 });
-
-const userRoutes = require('./routes/userRoutes');
-
-// ... configuration d'Express
-
-app.use('/api/user', userRoutes);
-
-// ... démarrer le serveur

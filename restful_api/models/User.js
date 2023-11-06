@@ -1,26 +1,31 @@
-const db = require('../config/database');
+// User.js
+import db from '../../db.js';
 
-class user {
-  constructor(id, nom, email, age, password) {
-    this.id = id;
-    this.nom = nom;
-    this.email = email;
-    this.age = age;
-    this.password = password;
+
+class User {
+  static async findAll() {
+    const [users] = await db.query('SELECT * FROM users');
+    return users;
   }
 
-  // Ajoutez ici des méthodes pour interagir avec la base de données
-  static create(newUser, result) {
-    db.query('INSERT INTO users SET ?', newUser, (err, res) => {
-      if (err) {
-        result(err, null);
-        return;
-      }
-      result(null, { id: res.insertId, ...newUser });
-    });
+  static async findById(id) {
+    const [users] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
+    return users[0];
   }
 
-  // ... d'autres méthodes comme findById, getAll, updateById, remove, etc.
+  static async create({ nom, email, age, password }) {
+    const [result] = await db.query('INSERT INTO users (nom, email, age, password) VALUES (?, ?, ?, ?)', [nom, email, age, password]);
+    return this.findById(result.insertId);
+  }
+
+  static async update(id, { nom, email, age, password }) {
+    await db.query('UPDATE users SET nom = ?, email = ?, age = ?, password = ? WHERE id = ?', [nom, email, age, password, id]);
+    return this.findById(id);
+  }
+
+  static async delete(id) {
+    await db.query('DELETE FROM users WHERE id = ?', [id]);
+  }
 }
 
-module.exports = user;
+export default User;

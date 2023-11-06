@@ -1,10 +1,28 @@
-const express = require('express');
+// userRoutes.js
+import express from 'express';
 const router = express.Router();
-const userController = require('../controllers/usercontroller');
+import {
+    getAllUsers,
+    getUser,
+    createUser,
+    updateUser,
+    deleteUser
+  } from '../controllers/userController.js';
+
+
+// Récupérer tous les utilisateurs
+router.get('/', getAllUsers);
+
+// Récupérer un utilisateur par son ID
+router.get('/:id', getUser);
 
 // Créer un nouvel utilisateur
-router.post('/user', userController.create);
+router.post('/', createUser);
 
-// ... définir d'autres routes pour GET, PUT, DELETE etc.
+// Mettre à jour un utilisateur par son ID
+router.put('/:id', updateUser);
+
+// Supprimer un utilisateur par son ID
+router.delete('/:id', deleteUser);
 
 module.exports = router;
